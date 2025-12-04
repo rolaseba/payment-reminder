@@ -1,127 +1,136 @@
-# SeguiPagos - Sistema de Recordatorio de Pagos
+# SeguiPagos - Payment Reminder System
 
-Una aplicación completa para gestionar recordatorios de servicios y pagos de manera eficiente.
+A complete application to efficiently manage service and payment reminders.
 
-## Características
+## Features
 
-- ✅ **Gestión de Servicios**: Agregar, editar y eliminar recordatorios de pago
-- 📅 **Vencimientos Periódicos**: Configura el día del mes en que vence cada servicio
-- 🏷️ **Categorías Personalizables**: Organiza tus servicios por categorías con colores
-- 💰 **Registro de Pagos**: Marca los pagos realizados y mantén un historial
-- 📊 **Dashboard**: Visualiza próximos vencimientos y estadísticas del mes
-- 🎨 **Interfaz Premium**: Diseño moderno con glassmorphism y modo oscuro
+- ✅ **Service Management**: Add, edit, and delete payment reminders
+- 📅 **Recurring Due Dates**: Configure the day of the month when each service is due
+- 🏷️ **Customizable Categories**: Organize your services by categories with colors
+- 💰 **Payment Records**: Mark completed payments and maintain a history
+- 📊 **Dashboard**: View upcoming due dates and monthly statistics
+- 🎨 **Premium Interface**: Modern design with glassmorphism and dark mode
 
-## Tecnologías
+## Technologies
 
 - **Backend**: Node.js + Express
-- **Base de Datos**: SQLite3
+- **Database**: SQLite3
 - **Frontend**: HTML5, CSS3, JavaScript (Vanilla)
-- **Estilos**: CSS personalizado con efectos glassmorphism
+- **Styles**: Custom CSS with glassmorphism effects
 
-## Instalación
+## Installation
 
-1. **Instalar dependencias**:
+1. **Install dependencies**:
+
 ```bash
 npm install
 ```
 
-2. **Iniciar el servidor**:
+2. **Start the server**:
+
 ```bash
 node server.js
 ```
 
-3. **Abrir en el navegador**:
+3. **Open in browser**:
+
 ```
 http://localhost:3000
 ```
 
-## Uso
+## Usage
 
-### Agregar un Servicio
+### Add a Service
 
-1. Haz clic en el botón **"Nuevo Servicio"**
-2. Completa el formulario:
-   - **Nombre del Servicio**: Ej. "Edesur", "Netflix"
-   - **Categoría**: Selecciona una existente o crea una nueva
-   - **Día de Vencimiento**: El día del mes en que vence (1-31)
-   - **Monto Aproximado**: Opcional, para estadísticas
-3. Haz clic en **"Guardar"**
+1. Click the **"New Service"** button
+2. Fill out the form:
+   - **Service Name**: E.g., "Electric Company", "Netflix"
+   - **Category**: Select an existing one or create a new one
+   - **Due Day**: The day of the month when it's due (1-31)
+   - **Approximate Amount**: Optional, for statistics
+3. Click **"Save"**
 
-### Crear una Categoría
+### Create a Category
 
-1. Al agregar un servicio, haz clic en el botón **+** junto al selector de categoría
-2. Ingresa el nombre y selecciona un color
-3. Haz clic en **"Crear"**
+1. When adding a service, click the **+** button next to the category selector
+2. Enter the name and select a color
+3. Click **"Create"**
 
-### Registrar un Pago
+### Record a Payment
 
-1. En la sección **"Próximos Vencimientos"**, localiza el servicio
-2. Haz clic en el ícono de **check** (✓)
-3. Confirma el monto pagado
-4. Haz clic en **"Confirmar Pago"**
+1. In the **"Upcoming Due Dates"** section, locate the service
+2. Click the **check** icon (✓)
+3. Confirm the amount paid
+4. Click **"Confirm Payment"**
 
-El pago quedará registrado en el historial y se actualizarán las estadísticas.
+The payment will be recorded in the history and statistics will be updated.
 
-### Eliminar un Servicio
+### Delete a Service
 
-1. En la tabla **"Mis Servicios"**, localiza el servicio
-2. Haz clic en el ícono de **basura** (🗑️)
-3. Confirma la eliminación
+1. In the **"My Services"** table, locate the service
+2. Click the **trash** icon (🗑️)
+3. Confirm deletion
 
-## Estructura del Proyecto
+## Project Structure
 
 ```
 payment-reminder/
-├── server.js           # Servidor Express y API REST
-├── payments.db         # Base de datos SQLite (se crea automáticamente)
+├── server.js           # Express server and REST API
+├── payments.db         # SQLite database (created automatically)
 ├── public/
-│   ├── index.html      # Página principal
+│   ├── index.html      # Main page
 │   ├── css/
-│   │   └── style.css   # Estilos de la aplicación
+│   │   └── style.css   # Application styles
 │   └── js/
-│       └── app.js      # Lógica del frontend
+│       └── app.js      # Frontend logic
 ├── package.json
 └── README.md
 ```
 
 ## API Endpoints
 
-### Categorías
-- `GET /api/categories` - Obtener todas las categorías
-- `POST /api/categories` - Crear una categoría
+### Categories
 
-### Recordatorios
-- `GET /api/reminders` - Obtener todos los recordatorios
-- `POST /api/reminders` - Crear un recordatorio
-- `PUT /api/reminders/:id` - Actualizar un recordatorio
-- `DELETE /api/reminders/:id` - Eliminar un recordatorio
+- `GET /api/categories` - Get all categories
+- `POST /api/categories` - Create a category
 
-### Pagos
-- `GET /api/payments` - Obtener historial de pagos
-- `POST /api/payments` - Registrar un pago
-- `GET /api/payments/check?month=X&year=Y` - Verificar pagos de un período
+### Reminders
 
-## Notas Importantes
+- `GET /api/reminders` - Get all reminders
+- `POST /api/reminders` - Create a reminder
+- `PUT /api/reminders/:id` - Update a reminder
+- `DELETE /api/reminders/:id` - Delete a reminder
 
-- Los vencimientos son **periódicos mensuales**. Si configuras el día 10, el servicio vencerá el día 10 de cada mes.
-- Si hoy es después del día de vencimiento, el sistema mostrará el próximo vencimiento del mes siguiente.
-- Los pagos se registran por período (mes/año), permitiendo un historial completo.
-- La base de datos se crea automáticamente con categorías predeterminadas: Energía, Gas, Internet, Agua.
+### Payments
 
-## Solución de Problemas
+- `GET /api/payments` - Get payment history
+- `POST /api/payments` - Record a payment
+- `GET /api/payments/check?month=X&year=Y` - Check payments for a period
 
-### El servidor no inicia
-- Verifica que el puerto 3000 esté disponible
-- Asegúrate de haber ejecutado `npm install`
+## Important Notes
 
-### No veo la interfaz, solo JSON
-- Asegúrate de acceder a `http://localhost:3000` (sin `/api/...`)
-- Verifica que los archivos en `public/` existan
+- Due dates are **monthly recurring**. If you set day 10, the service will be due on the 10th of each month.
+- If today is after the due date, the system will show the next due date for the following month.
+- Payments are recorded by period (month/year), allowing for a complete history.
+- The database is created automatically with default categories: Energy, Gas, Internet, Water.
 
-### Los cambios no se reflejan
-- Recarga la página con Ctrl+F5 (hard refresh)
-- Verifica la consola del navegador para errores JavaScript
+## Troubleshooting
 
-## Licencia
+### Server won't start
 
-ISC
+- Verify that port 3000 is available
+- Make sure you've run `npm install`
+
+### I only see JSON, not the interface
+
+- Make sure you're accessing `http://localhost:3000` (without `/api/...`)
+- Verify that files in `public/` exist
+
+### Changes are not reflected
+
+- Reload the page with Ctrl+F5 (hard refresh)
+- Check the browser console for JavaScript errors
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
