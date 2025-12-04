@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SeguiPagos - Recordatorios de Pagos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo">
+                <i class="fa-solid fa-file-invoice-dollar"></i>
+                <h1>SeguiPagos</h1>
+            </div>
+            <div class="current-date" id="currentDate"></div>
+        </header>
+
+        <main>
+            <section class="dashboard-grid">
+                <!-- Upcoming Payments Card -->
+                <div class="card upcoming-card">
+                    <div class="card-header">
+                        <h2><i class="fa-regular fa-calendar-check"></i> Próximos Vencimientos</h2>
+                        <span class="badge" id="upcomingCount">0</span>
+                    </div>
+                    <div class="card-body" id="upcomingList">
+                        <!-- JS will populate this -->
+                        <div class="empty-state">
+                            <p>No hay vencimientos próximos.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions / Stats -->
+                <div class="card stats-card">
+                    <div class="stat-item">
+                        <h3>Pagado este mes</h3>
+                        <p class="stat-value" id="paidThisMonth">$0</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>Pendiente</h3>
+                        <p class="stat-value pending" id="pendingThisMonth">$0</p>
+                    </div>
+                    <button class="btn-primary" id="btnAddReminder">
+                        <i class="fa-solid fa-plus"></i> Nuevo Servicio
+                    </button>
+                </div>
+            </section>
+
+            <section class="content-grid">
+                <!-- All Reminders List -->
+                <div class="card reminders-list-card">
+                    <div class="card-header">
+                        <h2>Mis Servicios</h2>
+                    </div>
+                    <div class="table-container">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Servicio</th>
+                                    <th>Categoría</th>
+                                    <th>Día de Venc.</th>
+                                    <th>Monto Est.</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="remindersTableBody">
+                                <!-- JS populated -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Payment History -->
+                <div class="card history-card">
+                    <div class="card-header">
+                        <h2>Historial Reciente</h2>
+                        <button class="btn-icon" id="btnExportCSV" title="Exportar a CSV">
+                            <i class="fa-solid fa-download"></i>
+                        </button>
+                    </div>
+                    <ul class="history-list" id="historyList">
+                        <!-- JS populated -->
+                    </ul>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal for Adding Reminder -->
+    <div class="modal" id="reminderModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Agregar Servicio</h2>
+                <button class="close-btn" id="closeModal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="reminderForm">
+                    <div class="form-group">
+                        <label for="title">Nombre del Servicio</label>
+                        <input type="text" id="title" name="title" placeholder="Ej. Edesur, Netflix" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Categoría</label>
+                        <div class="category-input-group">
+                            <select id="category" name="category_id" required>
+                                <!-- Populated by JS -->
+                            </select>
+                            <button type="button" class="btn-icon" id="btnManageCategories"
+                                title="Gestionar Categorías"><i class="fa-solid fa-list"></i></button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="day_of_month">Día de Vencimiento (Mensual)</label>
+                        <input type="number" id="day_of_month" name="day_of_month" min="1" max="31" placeholder="Ej. 10"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount_approx">Monto Aproximado (Opcional)</label>
+                        <input type="number" id="amount_approx" name="amount_approx" step="0.01" placeholder="0.00">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Managing Categories -->
+    <div class="modal" id="categoryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Gestionar Categorías</h2>
+                <button class="close-btn" id="closeCategoryModal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <!-- Add New Category Form -->
+                <form id="categoryForm" class="category-add-form">
+                    <h3>Agregar Nueva Categoría</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="catName">Nombre</label>
+                            <input type="text" id="catName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="catColor">Color</label>
+                            <input type="color" id="catColor" value="#3b82f6">
+                        </div>
+                        <button type="submit" class="btn-primary">Crear</button>
+                    </div>
+                </form>
+
+                <!-- Categories List -->
+                <div class="categories-list-section">
+                    <h3>Categorías Existentes</h3>
+                    <div class="categories-grid" id="categoriesGrid">
+                        <!-- JS populated -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Confirming Payment -->
+    <div class="modal" id="paymentModal">
+        <div class="modal-content small-modal">
+            <div class="modal-header">
+                <h2>Registrar Pago</h2>
+                <button class="close-btn" id="closePaymentModal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <p id="paymentConfirmText">¿Confirmar pago?</p>
+                <form id="paymentForm">
+                    <input type="hidden" id="payReminderId">
+                    <div class="form-group">
+                        <label for="payAmount">Monto Pagado</label>
+                        <input type="number" id="payAmount" step="0.01" required>
+                    </div>
+                    <button type="submit" class="btn-success">Confirmar Pago</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>

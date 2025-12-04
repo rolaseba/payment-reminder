@@ -1,0 +1,26 @@
+{
+  "name": "payment-reminder",
+  "version": "1.0.0",
+  "description": "Sistema de recordatorio de pagos - SeguiPagos",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "payments",
+    "reminders",
+    "bills"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "sqlite3": "^5.1.7"
+  }
+}
