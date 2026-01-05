@@ -5,6 +5,8 @@ let categories = [];
 let reminders = [];
 let payments = [];
 let paidStatus = new Set(); // Stores "reminderId-month-year" strings
+let currentUpcomingPage = 1;
+const ITEMS_PER_PAGE = 5;
 
 // DOM Elements
 const currentDateEl = document.getElementById('currentDate');
@@ -61,6 +63,23 @@ function setupEventListeners() {
     // Export CSV
     document.getElementById('btnExportCSV').addEventListener('click', exportToCSV);
 
+    // Pagination
+    document.getElementById('prevUpcoming').addEventListener('click', () => {
+        if (currentUpcomingPage > 1) {
+            currentUpcomingPage--;
+            renderDashboard();
+        }
+    });
+
+    document.getElementById('nextUpcoming').addEventListener('click', () => {
+        const totalItems = getUpcomingItems().length;
+        const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+        if (currentUpcomingPage < totalPages) {
+            currentUpcomingPage++;
+            renderDashboard();
+        }
+    });
+
     // Close modal on outside click
     window.addEventListener('click', (e) => {
         if (e.target.classList.contains('modal')) {
@@ -108,24 +127,17 @@ function renderCategories() {
     });
 }
 
-function renderDashboard() {
+function getUpcomingItems() {
     const today = new Date();
-    const currentMonth = today.getMonth(); // 0-11
+    const currentMonth = today.getMonth();
     const currentYear = today.getFullYear();
-
-    let totalPaid = 0;
-    let totalPending = 0;
     let upcomingItems = [];
 
     reminders.forEach(rem => {
-        // Calculate next due date
         let dueMonth = currentMonth;
         let dueYear = currentYear;
-
-        // Check if current month is already paid
         const isCurrentMonthPaid = paidStatus.has(`${rem.id}-${currentMonth}-${currentYear}`);
 
-        // If current month is paid, show next month
         if (isCurrentMonthPaid) {
             dueMonth++;
             if (dueMonth > 11) {
@@ -137,19 +149,6 @@ function renderDashboard() {
         const dueDate = new Date(dueYear, dueMonth, rem.day_of_month);
         const isPaid = paidStatus.has(`${rem.id}-${dueMonth}-${dueYear}`);
 
-        // Stats logic (simplified for "This Month")
-        // If due date is in current month
-        if (dueMonth === currentMonth && dueYear === currentYear) {
-            if (isPaid) {
-                // We need to find the amount paid for this specific period to be accurate, 
-                // but for now we can use the approx amount or sum from payments array
-                const payment = payments.find(p => p.reminder_id === rem.id && p.period_month === dueMonth && p.period_year === dueYear);
-                totalPaid += payment ? payment.amount : (rem.amount_approx || 0);
-            } else {
-                totalPending += rem.amount_approx || 0;
-            }
-        }
-
         if (!isPaid) {
             upcomingItems.push({
                 ...rem,
@@ -159,20 +158,65 @@ function renderDashboard() {
         }
     });
 
-    // Sort upcoming by date
     upcomingItems.sort((a, b) => a.dueDate - b.dueDate);
+    return upcomingItems;
+}
+
+function renderDashboard() {
+    const today = new Date();
+    const currentMonth = today.getMonth(); // 0-11
+    const currentYear = today.getFullYear();
+
+    let totalPaid = 0;
+    let totalPending = 0;
+
+    // Calculate stats separately (all items of the month)
+    reminders.forEach(rem => {
+        const isPaid = paidStatus.has(`${rem.id}-${currentMonth}-${currentYear}`);
+        if (isPaid) {
+            const payment = payments.find(p => p.reminder_id === rem.id && p.period_month === currentMonth && p.period_year === currentYear);
+            totalPaid += payment ? payment.amount : (rem.amount_approx || 0);
+        } else {
+            totalPending += rem.amount_approx || 0;
+        }
+    });
+
+    const upcomingItems = getUpcomingItems();
+    const totalItems = upcomingItems.length;
+    const totalPages = Math.max(1, Math.ceil(totalItems / ITEMS_PER_PAGE));
+
+    // Fix current page if it's out of bounds after deletion/payment
+    if (currentUpcomingPage > totalPages) {
+        currentUpcomingPage = totalPages;
+    }
 
     // Render Stats
     paidThisMonthEl.textContent = formatCurrency(totalPaid);
     pendingThisMonthEl.textContent = formatCurrency(totalPending);
-    upcomingCountEl.textContent = upcomingItems.length;
+    upcomingCountEl.textContent = totalItems;
+
+    // Render Pagination Controls
+    const prevBtn = document.getElementById('prevUpcoming');
+    const nextBtn = document.getElementById('nextUpcoming');
+    const pageInfo = document.getElementById('upcomingPageInfo');
+
+    prevBtn.disabled = currentUpcomingPage === 1;
+    nextBtn.disabled = currentUpcomingPage === totalPages;
+    pageInfo.textContent = `${currentUpcomingPage} / ${totalPages}`;
 
     // Render Upcoming List
     upcomingListEl.innerHTML = '';
-    if (upcomingItems.length === 0) {
+    if (totalItems === 0) {
         upcomingListEl.innerHTML = '<div class="empty-state"><p>¡Todo al día! No hay vencimientos próximos.</p></div>';
+        document.getElementById('upcomingPagination').style.visibility = 'hidden';
     } else {
-        upcomingItems.slice(0, 5).forEach(item => {
+        document.getElementById('upcomingPagination').style.visibility = 'visible';
+
+        const start = (currentUpcomingPage - 1) * ITEMS_PER_PAGE;
+        const end = start + ITEMS_PER_PAGE;
+        const pageItems = upcomingItems.slice(start, end);
+
+        pageItems.forEach(item => {
             const div = document.createElement('div');
             div.className = 'upcoming-item';
             div.innerHTML = `

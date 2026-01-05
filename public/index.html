@@ -27,8 +27,19 @@
                 <!-- Upcoming Payments Card -->
                 <div class="card upcoming-card">
                     <div class="card-header">
-                        <h2><i class="fa-regular fa-calendar-check"></i> Próximos Vencimientos</h2>
-                        <span class="badge" id="upcomingCount">0</span>
+                        <div class="header-main">
+                            <h2><i class="fa-regular fa-calendar-check"></i> Próximos Vencimientos</h2>
+                            <span class="badge" id="upcomingCount">0</span>
+                        </div>
+                        <div class="pagination-controls" id="upcomingPagination">
+                            <button class="btn-pagination" id="prevUpcoming" disabled title="Página anterior">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <span class="page-info" id="upcomingPageInfo">1 / 1</span>
+                            <button class="btn-pagination" id="nextUpcoming" disabled title="Siguiente página">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="card-body" id="upcomingList">
                         <!-- JS will populate this -->

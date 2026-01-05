@@ -124,6 +124,53 @@ header {
     gap: 0.5rem;
 }
 
+.header-main {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--card-border);
+}
+
+.btn-pagination {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 0.4rem;
+    cursor: pointer;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.btn-pagination:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+
+.btn-pagination:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.page-info {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    min-width: 35px;
+    text-align: center;
+}
+
 .badge {
     background: var(--accent-color);
     color: white;
